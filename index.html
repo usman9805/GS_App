@@ -80,6 +80,24 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        #login-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        #username {
+            padding: 6px;
+            border-radius: 5px;
+            border: none;
+        }
+        #login-btn {
+            padding: 6px 12px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 5px;
+            background: #00bfff;
+            color: white;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -87,47 +105,75 @@
         <h1><span>Global Serve</span> Chatbot</h1>
         <h2>Welcome to the Arpatech Global Serve support system.<br>This is a demo environment to test chatbot access controls.</h2>
     </div>
+
+    <!-- Login -->
+    <div id="login-container">
+        <h3>Login to Chatbot</h3>
+        <input type="text" id="username" placeholder="Enter your username" />
+        <button id="login-btn">Login</button>
+    </div>
+
+    <!-- Chat Icon + Chatbox -->
     <button id="chat-icon" title="Launch Chat 💬">💬</button>
     <div id="chatbox-container">
         <iframe id="chatbox" src="" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
         <p id="unauthorized">This website is not authenticated to load the chatbot.</p>
     </div>
-    <div id="login-container">
-    <h3>Login to Chatbot</h3>
-    <input type="text" id="username" placeholder="Enter your username" />
-    <button id="login-btn">Login</button>
-    </div>
-    <script>
-    document.getElementById("login-btn").addEventListener("click", function () {
-        const username = document.getElementById("username").value.trim();
-        if (!username) {
-            alert("Please enter a username");
-            return;
-        }
 
-        // Send to Flask to create session
-        fetch("https://b98fb03e475a.ngrok-free.app/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",   // ✅ VERY IMPORTANT: sends session cookie
-            body: JSON.stringify({ username })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                alert("Login successful! You can now open the chatbot.");
-            } else {
-                alert("Login failed.");
+    <script>
+        // Handle Login
+        document.getElementById("login-btn").addEventListener("click", function () {
+            const username = document.getElementById("username").value.trim();
+            if (!username) {
+                alert("Please enter a username");
+                return;
             }
-        })
-        .catch(err => console.error(err));
-    });
-</script>
+
+            fetch("https://b98fb03e475a.ngrok-free.app/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",   // ✅ send session cookie
+                body: JSON.stringify({ username })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Login successful! You can now open the chatbot.");
+                } else {
+                    alert("Login failed.");
+                }
+            })
+            .catch(err => console.error(err));
+        });
+
+        // Handle Chat Launch
+        document.getElementById("chat-icon").addEventListener("click", function () {
+            const iframe = document.getElementById("chatbox");
+            const unauthorizedMsg = document.getElementById("unauthorized");
+            
+            iframe.style.display = "none";
+            unauthorizedMsg.style.display = "none";
+
+            const flaskURL = "https://b98fb03e475a.ngrok-free.app/internal-chat";
+
+            fetch(flaskURL, {
+                method: "GET",
+                mode: "cors",
+                credentials: "include"   // ✅ session must be included
+            })
+            .then((response) => {
+                if (!response.ok) throw new Error("Unauthorized");
+                iframe.src = flaskURL;
+                iframe.style.display = "block";
+                setTimeout(() => {
+                    iframe.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            })
+            .catch(() => {
+                iframe.style.display = "none";
+                unauthorizedMsg.style.display = "flex";
+            });
+        });
+    </script>
 </body>
 </html>
-
-
-
-
-
-
