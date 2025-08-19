@@ -92,37 +92,40 @@
         <iframe id="chatbox" src="" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
         <p id="unauthorized">This website is not authenticated to load the chatbot.</p>
     </div>
-
+    <div id="login-container">
+    <h3>Login to Chatbot</h3>
+    <input type="text" id="username" placeholder="Enter your username" />
+    <button id="login-btn">Login</button>
+    </div>
     <script>
-        document.getElementById("chat-icon").addEventListener("click", function () {
-            const iframe = document.getElementById("chatbox");
-            const unauthorizedMsg = document.getElementById("unauthorized");
-            // Always reset view state on button click
-            iframe.style.display = "none";
-            unauthorizedMsg.style.display = "none";
-            const flaskURL = "https://b98fb03e475a.ngrok-free.app/internal-chat"; // Replace with your own
-            fetch(flaskURL, {
-                method: "GET",
-                mode: "cors"
-            })
-            .then((response) => {
-                if (!response.ok) throw new Error("Unauthorized");
-                iframe.src = flaskURL;
-                iframe.style.display = "block";
-                setTimeout(() => {
-                    iframe.scrollIntoView({ behavior: 'smooth' });
-                }, 300);
-            })
-            .catch(() => {
-                iframe.style.display = "none";
-                unauthorizedMsg.style.display = "flex";
-            });
-        });
-    </script>
+    document.getElementById("login-btn").addEventListener("click", function () {
+        const username = document.getElementById("username").value.trim();
+        if (!username) {
+            alert("Please enter a username");
+            return;
+        }
 
+        // Send to Flask to create session
+        fetch("https://b98fb03e475a.ngrok-free.app/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",   // ✅ VERY IMPORTANT: sends session cookie
+            body: JSON.stringify({ username })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                alert("Login successful! You can now open the chatbot.");
+            } else {
+                alert("Login failed.");
+            }
+        })
+        .catch(err => console.error(err));
+    });
+</script>
 </body>
-
 </html>
+
 
 
 
