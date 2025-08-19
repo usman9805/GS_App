@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Global Serve Chatbot | Arpatech</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #1c1c1c, #2f2f2f);
+            color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        h1 {
+            font-size: 28px;
+            color: #fff;
+            margin: 10px 0;
+        }
+        h1 span {
+            color: #00bfff;
+        }
+        h2 {
+            font-size: 18px;
+            color: #ccc;
+            text-align: center;
+            max-width: 700px;
+            margin-bottom: 40px;
+        }
+        #chat-icon {
+            background: #00bfff;
+            border: none;
+            border-radius: 50%;
+            padding: 20px;
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 191, 255, 0.4);
+            transition: transform 0.2s, box-shadow 0.3s ease;
+        }
+        #chat-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 191, 255, 0.6);
+        }
+        #chatbox-container {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #chatbox {
+            display: none;
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            background-color: white;
+        }
+        #unauthorized {
+            display: none;
+            color: #ff4c4c;
+            font-size: 16px;
+            margin-top: 20px;
+            align-items: center;
+            gap: 8px;
+        }
+        #unauthorized::before {
+            content: "⛔";
+            font-size: 20px;
+            margin-right: 8px;
+        }
+        .branding {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="branding">
+        <h1><span>Global Serve</span> Chatbot</h1>
+        <h2>Welcome to the Arpatech Global Serve support system.<br>This is a demo environment to test chatbot access controls.</h2>
+    </div>
+    <button id="chat-icon" title="Launch Chat 💬">💬</button>
+    <div id="chatbox-container">
+        <iframe id="chatbox" src="" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+        <p id="unauthorized">This website is not authenticated to load the chatbot.</p>
+    </div>
+
+    <script>
+        document.getElementById("chat-icon").addEventListener("click", function () {
+            const iframe = document.getElementById("chatbox");
+            const unauthorizedMsg = document.getElementById("unauthorized");
+            // Always reset view state on button click
+            iframe.style.display = "none";
+            unauthorizedMsg.style.display = "none";
+            const flaskURL = "http://127.0.0.1:5000/internal-chat"; // Replace with your own
+            fetch(flaskURL, {
+                method: "GET",
+                mode: "cors"
+            })
+            .then((response) => {
+                if (!response.ok) throw new Error("Unauthorized");
+                iframe.src = flaskURL;
+                iframe.style.display = "block";
+                setTimeout(() => {
+                    iframe.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
+            })
+            .catch(() => {
+                iframe.style.display = "none";
+                unauthorizedMsg.style.display = "flex";
+            });
+        });
+    </script>
+
+</body>
+</html>
