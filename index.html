@@ -105,14 +105,12 @@
         <h1><span>Global Serve</span> Chatbot</h1>
         <h2>Welcome to the Arpatech Global Serve support system.<br>This is a demo environment to test chatbot access controls.</h2>
     </div>
-
     <!-- Login -->
     <div id="login-container">
         <h3>Login to Chatbot</h3>
         <input type="text" id="username" placeholder="Enter your username" />
         <button id="login-btn">Login</button>
     </div>
-
     <!-- Chat Icon + Chatbox -->
     <button id="chat-icon" title="Launch Chat 💬">💬</button>
     <div id="chatbox-container">
@@ -128,8 +126,7 @@
                 alert("Please enter a username");
                 return;
             }
-
-            fetch("https://b98fb03e475a.ngrok-free.app/login", {
+            fetch("https://7ce4daceff27.ngrok-free.app/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",   // ✅ send session cookie
@@ -145,17 +142,13 @@
             })
             .catch(err => console.error(err));
         });
-
         // Handle Chat Launch
         document.getElementById("chat-icon").addEventListener("click", function () {
             const iframe = document.getElementById("chatbox");
             const unauthorizedMsg = document.getElementById("unauthorized");
-            
             iframe.style.display = "none";
             unauthorizedMsg.style.display = "none";
-
-            const flaskURL = "https://b98fb03e475a.ngrok-free.app/internal-chat";
-
+            const flaskURL = "https://7ce4daceff27.ngrok-free.app/internal-chat";
             fetch(flaskURL, {
                 method: "GET",
                 mode: "cors",
@@ -175,5 +168,7 @@
             });
         });
     </script>
+    
 </body>
 </html>
+
