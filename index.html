@@ -126,7 +126,7 @@
                 alert("Please enter a username");
                 return;
             }
-            fetch("https://6d9ce19a1dd8.ngrok-free.app/login", {
+            fetch("https://5338af49db03.ngrok-free.app/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",   // ✅ send session cookie
@@ -148,7 +148,7 @@
             const unauthorizedMsg = document.getElementById("unauthorized");
             iframe.style.display = "none";
             unauthorizedMsg.style.display = "none";
-            const flaskURL = "https://6d9ce19a1dd8.ngrok-free.app/internal-chat";
+            const flaskURL = "https://5338af49db03.ngrok-free.app/internal-chat";
             fetch(flaskURL, {
                 method: "GET",
                 mode: "cors",
@@ -171,6 +171,7 @@
     
 </body>
 </html>
+
 
 
 
